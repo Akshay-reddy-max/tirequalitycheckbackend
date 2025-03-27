@@ -16,6 +16,18 @@ import json
 from datetime import datetime
 import jwt
 from datetime import datetime, timedelta
+import traceback
+from rest_framework.pagination import PageNumberPagination
+from .models import TyreScan
+from .serializers import TyreScanSerializer
+
+
+class TyreScanPagination(PageNumberPagination):
+    page_size = 10  # Adjust as needed
+    page_size_query_param = 'page_size'
+    max_page_size = 50
+    
+    
 
 SECRET_KEY = 'tireTestai'  # Replace with Django's SECRET_KEY in real apps
 TOKEN_EXPIRY_HOURS = 12
@@ -163,3 +175,12 @@ class ScanTyreView(APIView):
 
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class TyreScanResultsView(APIView):
+    def get(self, request):
+        tyrescans = TyreScan.objects.all().order_by('-created_at')
+        paginator = TyreScanPagination()
+        result_page = paginator.paginate_queryset(tyrescans, request)
+        serializer = TyreScanSerializer(result_page, many=True, context={'request': request})
+        return paginator.get_paginated_response(serializer.data)

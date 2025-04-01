@@ -179,7 +179,7 @@ class ScanTyreView(APIView):
 
 class TyreScanResultsView(APIView):
     def get(self, request):
-        tyrescans = TyreScan.objects.all().order_by('-created_at')
+        tyrescans = TyreScan.objects.all().order_by('-scanned_at')
         paginator = TyreScanPagination()
         result_page = paginator.paginate_queryset(tyrescans, request)
         serializer = TyreScanSerializer(result_page, many=True, context={'request': request})

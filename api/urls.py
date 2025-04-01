@@ -9,7 +9,7 @@ urlpatterns = [
   path('signup/', signup_view),
     path('login/', login_api, name='login'),
         path('scan-tyre/', ScanTyreView.as_view(), name='scan-tyre'),
-   path('api/tyrescan/results/', TyreScanResultsView.as_view(), name='tyrescan-results'),
+    path('tyrescan/results/', TyreScanResultsView.as_view(), name='tyrescan-results'),
 
 
 ]
